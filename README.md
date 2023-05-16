@@ -4,7 +4,7 @@ Finding the probability of the existence of a connected graph in 2 ways:
 - **Modeling**. In this case, according to the adjacency matrix, where the 
 paths existence probabilities are indicated, subgraphs are repeatedly
 constructed (specified with tests number) and then, summing up the number of 
-connected graphs and diving it on the number of tests, the probability is 
+connected graphs and dividing it on the number of tests, the probability is 
 calculated.
 - **Brute forcing**. Then all vertices in the graph whose probability is 
 greater than 0 are considered as possible ones and all subgraphs are iterated 
