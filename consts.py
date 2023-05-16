@@ -1,1 +1,1 @@
-tests_amount = 10000
+ROUNDING = 4
