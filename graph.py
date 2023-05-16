@@ -1,16 +1,27 @@
 from typing import List
 from random import random
 from prettytable import PrettyTable
+import time
+
+from consts import ROUNDING
 
 class Graph:
-    def __init__(self, vertices_num):
+    def __init__(self, vertices_num, adj_mtx=None):
         self.vertices_num = vertices_num
-        self.graph_prob = [[0 for j in range(self.vertices_num)] for i in range(self.vertices_num)]
-        for i in range(self.vertices_num):
-            for j in range(self.vertices_num):
-                self.graph_prob[j][i] = self.graph_prob[i][j] = round(random(), 3)
-            self.graph_prob[i][i] = 0
-        self.graph = [[0 for j in range(self.vertices_num)] for i in range(self.vertices_num)]
+
+        if adj_mtx is not None:
+            self.graph_prob = adj_mtx
+        else: # random generation
+            self.graph_prob = [[0 for _ in range(self.vertices_num)] for _ in \
+                            range(self.vertices_num)]
+            for i in range(self.vertices_num):
+                for j in range(self.vertices_num):
+                    self.graph_prob[j][i] = self.graph_prob[i][j] = \
+                    round(random(), ROUNDING)
+                self.graph_prob[i][i] = 0
+
+        self.graph = [[0 for _ in range(self.vertices_num)] for _ in \
+                      range(self.vertices_num)]
     
     def bfs(self, start, end):
         visited = [False for _ in range(self.vertices_num)]
@@ -41,9 +52,14 @@ class Graph:
                 else:
                     self.graph[j][i] = self.graph[i][j] = 0
     
-    def calc_complete_graph_prob(self, tests_amount, verbose=False, timer=False):
+    def calc_complete_graph_prob(self, tests_amount, 
+                                verbose=False, timer=False):
         successful_tests = 0
         quarter = 1
+
+        if timer:
+            start_time = time.time()
+
         for test_num in range(1, tests_amount + 1):
             self.gen_graph()
             if self.check_connected_graph():
@@ -51,8 +67,13 @@ class Graph:
 
             if verbose:
                 if (test_num) % (tests_amount // 4) == 0:
-                    print(f'{quarter * 100 / 4}%...')
+                    print(f"{quarter * 100 / 4}%...")
                     quarter += 1
+
+        if timer:
+            last_time = time.time()
+            total_time = last_time - start_time
+            print(f"Spent time: {round(total_time, ROUNDING)}")
 
         return successful_tests / tests_amount
     
@@ -109,6 +130,9 @@ class Graph:
 
         count = 1
 
+        if timer:
+            start_time = time.time()
+
         while 1 in graph_edges:
             self.gen_new_edges_graph(graph_edges)
             if self.check_connected_graph():
@@ -116,7 +140,7 @@ class Graph:
             self.enumeration(graph_edges)
 
             if verbose:
-                print(f'Subgraph #{count}')
+                print(f"Subgraph #{count}")
                 self.print_graph()
                 print()
                 count += 1
@@ -126,10 +150,15 @@ class Graph:
             result += self.calc_connected_graph_prob()
 
         if verbose:
-            print(f'Subgraph #{count}')
+            print(f"Subgraph #{count}")
             self.print_graph()
             print()
 
+        if timer:
+            last_time = time.time()
+            total_time = last_time - start_time
+            print(f"Spent time: {round(total_time, ROUNDING)}")
+            
         return result
 
     def print_graph_prob(self):
