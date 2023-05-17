@@ -95,11 +95,11 @@ class Graph:
         remainder = 1
         i = len(edges) - 1
         while remainder != 0:
-            if edges[i] == 1:
-                edges[i] = 0
-                remainder = 0
-            elif edges[i] == 0:
+            if edges[i] == 0:
                 edges[i] = 1
+                remainder = 0
+            elif edges[i] == 1:
+                edges[i] = 0
             i -= 1
     
     def calc_connected_graph_prob(self):
@@ -123,9 +123,9 @@ class Graph:
         for i in range(self.vertices_num):
             for j in range(temp, self.vertices_num):
                 if self.graph_prob[i][j] > 0:
-                    graph_edges.append(1)
-                else:
                     graph_edges.append(0)
+                else:
+                    graph_edges.append(-1)
             temp += 1
 
         count = 1
@@ -133,7 +133,7 @@ class Graph:
         if timer:
             start_time = time.time()
 
-        while 1 in graph_edges:
+        while 0 in graph_edges:
             self.gen_new_edges_graph(graph_edges)
             if self.check_connected_graph():
                 result += self.calc_connected_graph_prob()
@@ -158,7 +158,7 @@ class Graph:
             last_time = time.time()
             total_time = last_time - start_time
             print(f"Spent time: {round(total_time, ROUNDING)}")
-            
+
         return result
 
     def print_graph_prob(self):
