@@ -10,8 +10,10 @@ if __name__ == "__main__":
         adj_mtx = []
         print("Enter adjacency matrix")
         for i in range(1, mtx_size + 1):
-            adj_mtx.append(list(map(float, \
-                                    input(f"Row #{i}: ").strip().split())))
+            row = list(map(float, input(f"Row #{i}: ").strip().split()))
+            if len(row) != mtx_size:
+                raise ValueError('Incorrect matrix row length')
+            adj_mtx.append(row)
         graph = Graph(mtx_size, adj_mtx)
     else:
         graph = Graph(mtx_size)
